@@ -34,7 +34,8 @@ export const InteractiveHub = () => {
       icon: <Gamepad2 className="w-6 h-6" />,
       description: "Fun games and activities",
       position: "top-right",
-      gradient: "bg-gradient-primary"
+      gradient: "bg-gradient-primary",
+      onClick: () => window.location.href = '/activities'
     },
     {
       id: "stats",
