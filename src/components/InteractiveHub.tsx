@@ -1,8 +1,24 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { VirtualPet } from "./VirtualPet";
+import { availablePets, type PetType } from "./PetCustomizer";
 import { Heart, Gamepad2, Settings, BarChart3, Sparkles, Globe } from "lucide-react";
 
 export const InteractiveHub = () => {
+  const [selectedPet, setSelectedPet] = useState<PetType>(availablePets[0]);
+  
+  // Load saved pet from localStorage
+  useEffect(() => {
+    const savedPet = localStorage.getItem('selectedPet');
+    if (savedPet) {
+      try {
+        const pet = JSON.parse(savedPet);
+        setSelectedPet(pet);
+      } catch (error) {
+        console.error('Failed to load saved pet:', error);
+      }
+    }
+  }, []);
   const hubSections = [
     {
       id: "pet",
@@ -42,7 +58,8 @@ export const InteractiveHub = () => {
       icon: <Sparkles className="w-6 h-6" />,
       description: "Personalize your pet",
       position: "top-left",
-      gradient: "bg-gradient-accent"
+      gradient: "bg-gradient-accent",
+      onClick: () => window.location.href = '/customize'
     }
   ];
 
@@ -77,13 +94,14 @@ export const InteractiveHub = () => {
             {section.position === "center" ? (
               // Central Pet Component
               <div className="h-full">
-                {section.component}
+                <VirtualPet selectedPet={selectedPet} />
               </div>
             ) : (
               // Floating Interactive Cards
               <Button
                 variant="soft"
                 size="lg"
+                onClick={section.onClick}
                 className={`
                   h-full w-full flex-col justify-center p-6 
                   ${section.gradient || "bg-gradient-card"}

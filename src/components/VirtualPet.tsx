@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, Zap, Gift, TrendingUp } from "lucide-react";
+import { type PetType } from "./PetCustomizer";
 
 type PetMood = "happy" | "sad" | "neutral" | "overfed";
 
-export const VirtualPet = () => {
+interface VirtualPetProps {
+  selectedPet?: PetType;
+}
+
+export const VirtualPet = ({ selectedPet }: VirtualPetProps) => {
   const [petMood, setPetMood] = useState<PetMood>("neutral");
-  const [petEmoji, setPetEmoji] = useState("🐱");
   const [lastInteraction, setLastInteraction] = useState(Date.now());
   const [feedCount, setFeedCount] = useState(0);
   const [isIgnored, setIsIgnored] = useState(false);
@@ -36,15 +40,30 @@ export const VirtualPet = () => {
   }, [feedCount]);
 
   const getPetDisplay = () => {
+    if (!selectedPet) {
+      // Default cat emotions
+      switch (petMood) {
+        case "happy":
+          return "😸";
+        case "sad":
+          return "😿";
+        case "overfed":
+          return "🤢";
+        default:
+          return "🐱";
+      }
+    }
+    
+    // Use selected pet's emotions
     switch (petMood) {
       case "happy":
-        return "😸";
+        return selectedPet.happyEmoji;
       case "sad":
-        return "😿";
+        return selectedPet.sadEmoji;
       case "overfed":
-        return "🤢";
+        return selectedPet.overfedEmoji;
       default:
-        return petEmoji;
+        return selectedPet.neutralEmoji;
     }
   };
 
